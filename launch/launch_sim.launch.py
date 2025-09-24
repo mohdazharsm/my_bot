@@ -23,7 +23,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true'}.items()
+                )]), launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()
     )
     
     world = LaunchConfiguration('world')
@@ -62,6 +62,23 @@ def generate_launch_description():
     )
 
 
+    diff_drive_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "diff_cont",
+            '--controller-ros-args',
+            '-r /diff_cont/cmd_vel:=/cmd_vel'
+        ],
+    )
+
+    joint_broad_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_broad"],
+    )
+
+
 
     # Launch them all!
     return LaunchDescription([
@@ -69,5 +86,7 @@ def generate_launch_description():
         world_arg,
         gazebo,
         spawn_entity,
-        ros_gz_bridge
+        ros_gz_bridge,
+        diff_drive_spawner,
+        joint_broad_spawner
     ])
