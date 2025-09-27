@@ -78,6 +78,17 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
+    twist_mux_config = os.path.join(get_package_share_directory('my_bot'),
+                                         'config', 'twist_mux.yaml')
+    twist_mux = Node(
+        package='twist_mux',
+        executable='twist_mux',
+        output='screen',
+        remappings={('/cmd_vel_out', '/cmd_vel')},
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+            twist_mux_config])
+
 
 
     # Launch them all!
@@ -88,5 +99,6 @@ def generate_launch_description():
         spawn_entity,
         ros_gz_bridge,
         diff_drive_spawner,
-        joint_broad_spawner
+        joint_broad_spawner,
+        twist_mux
     ])
